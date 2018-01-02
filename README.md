@@ -3,7 +3,7 @@ A Python script for adding subtitles to all episodes in a season. The script can
 ## Requirements
 Python 3+
 
-Mkvmerge from MKVtoolNix which can be downloaded [here]((https://mkvtoolnix.download/downloads.html). If you are using a portable version you must use the ```-p``` flag to point to the folder where the mkvmerge file is located.
+Mkvmerge from MKVtoolNix which can be downloaded [here](https://mkvtoolnix.download/downloads.html). If you are using a portable version you must use the ```-p``` flag to point to the folder where the mkvmerge file is located.
 ## Installation
 Clone the repository using
 ```git
