@@ -1,5 +1,4 @@
 # subtitle-adder
-
 A Python script for adding subtitles to all episodes in a season. The script can handle all file formats that [MKVtoolNix](https://mkvtoolnix.download/downloads.html) supports. The scripts saves all files in the mkv format.
 ## Requirements
 Python 3+
@@ -66,11 +65,8 @@ optional arguments:
 ```
 ## Example
 ```
-python subtitle_adder.py "/videos/Game Of Thrones S01"
-
-python .\subtitle_adder.py "C:\Users\Björn\Videos\Game Of Thrones S01\" "C:\Users\
-Björn\Videos\Game of Thrones S01 Subs\" eng English -p C:\Users\Björn\Videos\ -of "Game Of Thrones S01 Subed" -o "Game Of Throne S01E*N
-UM*" -d False
+python subtitle_adder.py "\Videos\Game Of Thrones S01" "\Videos\Game of Thrones S01 Subs" swe Swedish -p Programs\mkvtoolnix -of "\Videos\Game Of Thrones S01 Subbed" -o "Game of Thrones S01E*NUM*"
 ```
+This will add Swedish subtitles to all episodes in the first season of Game Of Thrones and save them to the *Game of Thrones S01 Subbed* folder. It also points to location where the mkvmerge is located *(Programs\mkvtoolnix)* using the ```-p``` flag.  
 ## Credits
 The [python-mkv](https://pypi.python.org/pypi/mkv/0.1.5) module is created by Nekmo. I've done some minor changes to it to support newer python versions, so the script is not compatible with the PyPi package.
