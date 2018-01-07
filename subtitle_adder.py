@@ -9,7 +9,7 @@ def main():
     parser = add_arguments()
     args = parser.parse_args()
     if args.remove_input:
-        if not ask_question('This will remove all input files which cannot ' \
+        if not ask_question('This will remove all input files which cannot '
                             'be reversed. Are you sure?'):
             exit(1)
 
@@ -18,7 +18,7 @@ def main():
 
 def add_arguments():
     """Returns a parser with all arguments"""
-    parser = argparse.ArgumentParser(description='Add subtitles to all' \
+    parser = argparse.ArgumentParser(description='Add subtitles to all'
                                                  ' episodes in a season',
                                      formatter_class=CustomFormatter)
 
@@ -32,8 +32,8 @@ def add_arguments():
 
     parser.add_argument('lang',
                         metavar='LANG',
-                        help='The language code (e.g., eng, swe) of the' \
-                        ' subtitles')
+                        help='The language code (e.g., eng, swe) of the'
+                             ' subtitles')
 
     parser.add_argument('name',
                         metavar='NAME',
@@ -49,37 +49,37 @@ def add_arguments():
     parser.add_argument('-of', '--output-folder',
                         metavar='FOLDER',
                         default="",
-                        help='The folder where the output is saved ' \
-                        '(default: Same as script)')
+                        help='The folder where the output is saved '
+                             '(default: Same as script)')
 
     parser.add_argument('-d', '--default',
                         metavar='True/False',
                         type=str2bool,
                         default=None,
                         choices=[True, False],
-                        help='If the subtitles should be default or not ' \
-                        '(default: True)')
+                        help='If the subtitles should be default or not '
+                             '(default: True)')
 
     parser.add_argument('-f', '--forced',
                         metavar='True/False',
                         type=str2bool,
                         default=False,
                         choices=[True, False],
-                        help='If the subtitles should be forced or not ' \
-                        '(default: False)')
+                        help='If the subtitles should be forced or not ' 
+                             '(default: False)')
 
     parser.add_argument('-p', '--path',
                         default="",
-                        help='The path to  mkvmerge (default: same directory ' \
-                        'as the script)')
+                        help='The path to  mkvmerge (default: same directory '
+                             'as the script)')
 
     parser.add_argument('-ri', '--remove-input',
                         metavar='True/False',
                         type=str2bool,
                         default=False,
                         choices=[True, False],
-                        help='Removes all input files. This can not be ' \
-                        'reversed (default: False)')
+                        help='Removes all input files. This can not be '
+                             'reversed (default: False)')
 
     return parser
 
@@ -119,7 +119,7 @@ def add_subs_to_season(video_folder, sub_folder, args):
             print("Success!")
         except FileNotFoundError as e:
             traceback.print_exc()
-            sys.exit("The mkvmerge file could not be found! Try changing its "\
+            sys.exit("The mkvmerge file could not be found! Try changing its "
                      "path using -p (see -h for more info)")
         if args.remove_input:
             remove_input(sub_folder, sub_f, video_folder, video_f)
@@ -137,7 +137,7 @@ def filter_folders(video_files, sub_files):
         sys.exit('The folder for the video files could not be found')
     try:
         sub_files = [f for f in os.listdir(sub_files) if
-                    os.path.isfile(os.path.join(sub_files, f))]
+                     os.path.isfile(os.path.join(sub_files, f))]
     except FileNotFoundError:
         traceback.print_exc()
         sys.exit('The folder for the subtitle files could not be found')
@@ -163,6 +163,7 @@ def create_merge_obj(output, output_folder, ep_file, ep_num):
                                                  "{}.mkv".format(out_name)))
     return merge_file
 
+
 def ask_question(question):
     """Asks user a question and returns True if the user answer yes"""
     answer = input("{} (y/n): ".format(question)).lower()
@@ -178,6 +179,8 @@ def remove_input(sub_folder, sub_f, video_folder, video_f):
 
 
 class CustomFormatter(argparse.HelpFormatter):
+    """Credit to https://stackoverflow.com/a/23941599"""
+
     def _format_action_invocation(self, action):
         if not action.option_strings:
             metavar, = self._metavar_formatter(action, action.dest)(1)
@@ -197,7 +200,7 @@ class CustomFormatter(argparse.HelpFormatter):
                 default = action.dest.upper()
                 args_string = self._format_args(action, default)
                 for option_string in action.option_strings:
-                    #parts.append('%s %s' % (option_string, args_string))
+                    # parts.append('%s %s' % (option_string, args_string))
                     parts.append('{}'.format(option_string))
                 parts[-1] += ' {}'.format(args_string)
             return ', '.join(parts)
