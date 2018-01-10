@@ -13,7 +13,7 @@ def main():
                             'be reversed. Are you sure?'):
             exit(1)
 
-    add_subs_to_season(args.video_input, args.sub_input, args)
+    add_subs_to_season(args.video_input, args.sub_input, vars(args))
 
 
 def add_arguments():
@@ -97,31 +97,32 @@ def str2bool(v):
 def add_subs_to_season(video_folder, sub_folder, args):
     """Adds subtitles to all video files in the video folder"""
     ep_num = 0
+    print("Hello")
     video_files, sub_files = filter_folders(video_folder, sub_folder)
     for video_f, sub_f in zip(video_files, sub_files):
         ep_num += 1
 
-        v_source = get_source(args.video_input, video_f)
+        v_source = get_source(args["video_input"], video_f)
 
-        merge_file = create_merge_obj(args.output,
-                                      args.output_folder,
+        merge_file = create_merge_obj(args["output"],
+                                      args["output_folder"],
                                       video_f,
                                       ep_num)
 
         merge_file.add_source(v_source)
-        merge_file.add_subtitle(os.path.join(args.sub_input, sub_f),
-                                args.name,
-                                args.lang,
-                                is_forced=args.forced,
-                                is_default=args.default)
+        merge_file.add_subtitle(os.path.join(args["sub_input"], sub_f),
+                                args["name"],
+                                args["lang"],
+                                is_forced=args["forced"],
+                                is_default=args["default"])
         try:
-            merge_file.create(location=os.path.normpath(args.path) + "\\")
+            merge_file.create(location=os.path.normpath(args["path"]) + "\\")
             print("Success!")
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             traceback.print_exc()
             sys.exit("The mkvmerge file could not be found! Try changing its "
                      "path using -p (see -h for more info)")
-        if args.remove_input:
+        if args["remove_input"]:
             remove_input(sub_folder, sub_f, video_folder, video_f)
             print("Deleted subtitle file {}".format(sub_f))
             print("Deleted video file {}".format(video_f))
