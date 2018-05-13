@@ -101,6 +101,7 @@ ENV/
 .mypy_cache/
 
 # IntelliJ
+.idea
 out/
 
 # mpeltonen/sbt-idea plugin

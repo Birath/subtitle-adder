@@ -1,5 +1,6 @@
 from mkv import merge, source
 import os
+import pathlib
 import sys
 import argparse
 import traceback
@@ -12,45 +13,44 @@ def main():
         if not ask_question('This will remove all input files which cannot '
                             'be reversed. Are you sure?'):
             exit(1)
-
-    add_subs_to_season(args.video_input, args.sub_input, args)
+    add_subs_to_season(args)
 
 
 def add_arguments():
     """Returns a parser with all arguments"""
     parser = argparse.ArgumentParser(description='Add subtitles to all'
-                                                 ' episodes in a season',
+                                                 ' episodes in a season.',
                                      formatter_class=CustomFormatter)
 
     parser.add_argument('video_input',
                         metavar='ep-folder',
-                        help='The folder where the video files are located')
+                        help='The folder where the video files are located.')
 
     parser.add_argument('sub_input',
                         metavar='sub-folder',
-                        help='The folder where the subtitle files are located')
+                        help='The folder where the subtitle files are located.')
 
     parser.add_argument('lang',
                         metavar='LANG',
                         help='The language code (e.g., eng, swe) of the'
-                             ' subtitles')
+                             ' subtitles.')
 
     parser.add_argument('name',
                         metavar='NAME',
-                        help='The name of the subtitle track')
+                        help='The name of the subtitle track.')
 
     parser.add_argument('-o', '--output',
                         metavar='FILE',
                         default=None,
-                        help="""The file names of the outputs (default: Same as
-                        input). Use *NUM* to insert the episode number in the
-                        name (ex: Game Of Thrones S01E*NUM*) """)
+                        help='The file names of the outputs (default: Same as'
+                        ' input). Use *NUM* to insert the episode number in '
+                        'the name (ex: Game Of Thrones S01E*NUM*).')
 
     parser.add_argument('-of', '--output-folder',
                         metavar='FOLDER',
                         default="",
                         help='The folder where the output is saved '
-                             '(default: Same as script)')
+                             '(default: Working directory of the script).')
 
     parser.add_argument('-d', '--default',
                         metavar='True/False',
@@ -65,13 +65,13 @@ def add_arguments():
                         type=str2bool,
                         default=False,
                         choices=[True, False],
-                        help='If the subtitles should be forced or not ' 
+                        help='If the subtitles should be forced or not '
                              '(default: False)')
 
     parser.add_argument('-p', '--path',
                         default="",
-                        help='The path to  mkvmerge (default: same directory '
-                             'as the script)')
+                        help='The path to mkvmerge (default: working directory'
+                             ' of the script).')
 
     parser.add_argument('-ri', '--remove-input',
                         metavar='True/False',
@@ -79,7 +79,7 @@ def add_arguments():
                         default=False,
                         choices=[True, False],
                         help='Removes all input files. This can not be '
-                             'reversed (default: False)')
+                             'reversed (default: False).')
 
     return parser
 
@@ -94,8 +94,10 @@ def str2bool(v):
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
 
-def add_subs_to_season(video_folder, sub_folder, args):
+def add_subs_to_season(args):
     """Adds subtitles to all video files in the video folder"""
+    video_folder = os.path.normpath(args.video_input)
+    sub_folder = os.path.normpath(args.sub_input)
     ep_num = 0
     video_files, sub_files = filter_folders(video_folder, sub_folder)
     for video_f, sub_f in zip(video_files, sub_files):
@@ -106,7 +108,9 @@ def add_subs_to_season(video_folder, sub_folder, args):
         merge_file = create_merge_obj(args.output,
                                       args.output_folder,
                                       video_f,
-                                      ep_num)
+                                      ep_num,
+                                      video_folder,
+                                      args.lang)
 
         merge_file.add_source(v_source)
         merge_file.add_subtitle(os.path.join(args.sub_input, sub_f),
@@ -152,8 +156,11 @@ def get_source(ep_folder, ep_file):
     return v_source
 
 
-def create_merge_obj(output, output_folder, ep_file, ep_num):
+def create_merge_obj(output, output_folder, ep_file, ep_num, input_folder, sub_lang):
     """Returns a MkvMerge object based on the given input"""
+    input_path = pathlib.Path(input_folder)
+    if output_folder == "":
+        output_folder = input_path.parent / f'{input_path.name} {sub_lang.title()} Sub'
     if output is None:
         merge_file = merge.MkvMerge(os.path.join(output_folder, ep_file))
     else:
